@@ -30,6 +30,53 @@ class TestCase(unittest.TestCase):
     def test_no_integers(self):
         self.assert_extract("no integers", library.integers)
 
+    # 2
+    def test_correctly_extracts_date(self):
+        self.assert_extract("I was born on 2018-07-25.", library.dates_iso8601, "2018-07-25")
+
+    # 6
+    def test_not_extract_invalid_data(self):
+        self.assert_extract("I was born on 2017-17-25.", library.dates_iso8601)
+
+    # 8
+    def test_correctly_extracts_data_with_month(self):
+        self.assert_extract("25 Jan 2017", library.dates_fmt2)
+
+    # Rest of tests
+
+    def test_time_stamp_z(self):
+        self.assert_extract('Current timeStamp is 2018-06-22T18:22:19.123Z', library.dates_iso8601, '2018-06-22T18:22:19.123Z')
+
+    def test_time_stamp(self):
+        self.assert_extract('Current timeStamp is 2018-06-22T18:22:19.123', library.dates_iso8601,
+                            '2018-06-22T18:22:19.123')
+
+    def test_time_stamp_t(self):
+        self.assert_extract("something 2018-12-25T18:22:19.12", library.dates_iso8601, '2018-12-25 18:22:19.12')
+
+    def test_date_with_comma(self):
+        self.assert_extract('I have 123,456,789', library.integers)
+
+    def test_data_with_abb_month(self):
+        self.assert_extract('Current date is 25 Jan. 2017', library.dates_fmt2)
+
+    def test_data_with_comma_month(self):
+        self.assert_extract('Current date is 25 Jan, 2017', library.dates_fmt2)
+
+    def test_dates_with_offset(self):
+        self.assert_extract("2018-12-25T18:22:19.12 -0800", library.dates_iso8601, '2018-12-25 10:22:19.12')
+
+    def test_dates_UTC(self):
+        self.assert_extract("2018-12-25 18:22:19.12 UTC", library.dates_iso8601, '2018-12-25 10:22:19.12')
+
+    def test_time_stamp_mdt(self):
+        self.assert_extract('Current timeStamp is 2018-06-22T18:22:19.123MDT', library.dates_iso8601,
+                            '2018-06-22T18:22:19.123MDT')
+
+    def test_time_stamp_mst(self):
+        self.assert_extract('Current timeStamp is 2018-06-22T18:22:19.123MST', library.dates_iso8601,
+                            '2018-06-22T18:22:19.123MST')
+
 
 if __name__ == '__main__':
     unittest.main()
